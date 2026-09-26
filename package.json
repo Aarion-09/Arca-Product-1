@@ -1,0 +1,20 @@
+{
+  "name": "arca-platform",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ARCA — the premium professional network.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test",
+    "check": "node --check server.mjs && node --check lib/server-core.mjs && node --check public/js/app.js && npm test"
+  },
+  "dependencies": {
+    "mysql2": "^3.15.0",
+    "nodemailer": "^10.0.9"
+  }
+}

@@ -1,0 +1,319 @@
+/* ARCA motion system.
+   Every effect here is opt-in via a class, driven by IntersectionObserver
+   (motion.js), and collapses to "already visible, no movement" when the
+   visitor prefers reduced motion. Nothing is ever hidden by animation alone —
+   if the JS fails, `.no-js` restores full visibility. */
+
+/* ==========================================================================
+   Scroll reveals
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity var(--reveal) var(--ease-out),
+    transform var(--reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal.done { will-change: auto; }
+
+.reveal-left { transform: translate3d(-34px, 0, 0); }
+.reveal-right { transform: translate3d(34px, 0, 0); }
+.reveal-scale { transform: scale(0.94); }
+.reveal-blur { filter: blur(10px); transition-property: opacity, transform, filter; }
+.reveal-blur.in { filter: blur(0); }
+
+/* Children stagger automatically; the index is set by motion.js. */
+.stagger > * {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity var(--slow) var(--ease-out),
+    transform var(--slow) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 72ms);
+}
+.stagger.in > * { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   Headline word reveal
+   ========================================================================== */
+.words { display: inline; }
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.word > span {
+  display: inline-block;
+  transform: translateY(105%) rotate(2.5deg);
+  opacity: 0;
+  transition:
+    transform 940ms var(--ease-out),
+    opacity 640ms var(--ease-out);
+  transition-delay: calc(var(--w, 0) * 52ms);
+}
+.words.in .word > span { transform: none; opacity: 1; }
+
+/* ==========================================================================
+   Counters and bars
+   ========================================================================== */
+.counter { font-variant-numeric: tabular-nums; }
+
+.meter {
+  position: relative;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--line-soft);
+  overflow: hidden;
+}
+.meter > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange-bright), var(--orange));
+  transition: width 1400ms var(--ease-out);
+}
+
+/* ==========================================================================
+   Ambient background motion
+   ========================================================================== */
+.aurora {
+  position: absolute;
+  inset: -30% -10% auto -10%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  filter: blur(70px);
+}
+.aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  animation: drift 26s var(--ease-in-out) infinite alternate;
+}
+.aurora span:nth-child(1) {
+  width: 46vw; height: 46vw; left: -6%; top: 6%;
+  background: radial-gradient(circle, rgba(255, 107, 24, 0.34), transparent 66%);
+}
+.aurora span:nth-child(2) {
+  width: 40vw; height: 40vw; right: -4%; top: 0%;
+  background: radial-gradient(circle, rgba(43, 123, 255, 0.3), transparent 66%);
+  animation-duration: 32s;
+  animation-direction: alternate-reverse;
+}
+.aurora span:nth-child(3) {
+  width: 34vw; height: 34vw; left: 38%; bottom: -8%;
+  background: radial-gradient(circle, rgba(233, 89, 12, 0.2), transparent 68%);
+  animation-duration: 38s;
+}
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(5%, -7%, 0) scale(1.16); }
+}
+
+/* Dark sections invert the blend so the glow reads as light, not ink. */
+.on-ink .aurora span { mix-blend-mode: screen; opacity: 0.6; }
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+   Marquee
+   ========================================================================== */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+.marquee > div {
+  display: flex;
+  flex: none;
+  gap: 3rem;
+  padding-right: 3rem;
+  animation: slide 44s linear infinite;
+}
+.marquee:hover > div { animation-play-state: paused; }
+@keyframes slide {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* ==========================================================================
+   Micro-interactions
+   ========================================================================== */
+.lift { transition: transform var(--base) var(--ease-out), box-shadow var(--base) var(--ease-out); }
+.lift:hover { transform: translateY(-5px); box-shadow: var(--lift-3); }
+
+/* Set by motion.js from pointer position. */
+.tilt {
+  transform: perspective(900px)
+             rotateX(calc(var(--ty, 0) * -5deg))
+             rotateY(calc(var(--tx, 0) * 5deg))
+             translateZ(0);
+  transition: transform var(--base) var(--ease-out);
+}
+
+.glow { position: relative; overflow: hidden; }
+.glow::before {
+  content: "";
+  position: absolute;
+  width: 320px; height: 320px;
+  left: var(--mx, 50%); top: var(--my, 50%);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--orange-veil), transparent 68%);
+  opacity: 0;
+  transition: opacity var(--base) var(--ease-out);
+  pointer-events: none;
+}
+.glow:hover::before { opacity: 1; }
+
+.underline-grow {
+  position: relative;
+  text-decoration: none;
+}
+.underline-grow::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 100%; height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--base) var(--ease-out);
+}
+.underline-grow:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* ==========================================================================
+   Loading
+   ========================================================================== */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--line-soft);
+  border-radius: var(--r-sm);
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+  animation: sweep 1.5s infinite;
+}
+@keyframes sweep { to { transform: translateX(100%); } }
+
+.spinner {
+  width: 1.05em;
+  height: 1.05em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 620ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.boot {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.2rem;
+  min-height: 100svh;
+  text-align: center;
+  color: var(--muted);
+}
+.boot img { animation: breathe 2.4s var(--ease-in-out) infinite; }
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.07); opacity: 1; }
+}
+
+/* ==========================================================================
+   Page transition
+   ========================================================================== */
+.page-enter { animation: pageIn 520ms var(--ease-out) both; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@view-transition { navigation: auto; }
+
+/* ==========================================================================
+   Pulse / attention
+   ========================================================================== */
+.pulse-dot {
+  position: relative;
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: ping 2s var(--ease-out) infinite;
+}
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  70%, 100% { transform: scale(3); opacity: 0; }
+}
+
+/* ==========================================================================
+   Reduced motion — the master off switch
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .stagger > *, .words .word > span {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .aurora, .grain { display: none; }
+  .marquee > div { animation: none; }
+}
+:root[data-motion="off"] .reveal,
+:root[data-motion="off"] .stagger > *,
+:root[data-motion="off"] .words .word > span {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+:root[data-motion="off"] .aurora,
+:root[data-motion="off"] .grain { display: none; }
+:root[data-motion="off"] .marquee > div { animation: none; }
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* If JavaScript never runs, nothing stays invisible. */
+.no-js .reveal,
+.no-js .stagger > *,
+.no-js .words .word > span {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}

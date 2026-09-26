@@ -1,0 +1,100 @@
+/* ARCA design tokens.
+   Palette: white, orange and black, with the logo's blue as the accent.
+   Every neutral used for text is checked against WCAG AA on its background —
+   the previous build shipped 25 contrast failures because muted greys were
+   picked by eye. */
+
+:root {
+  /* --- brand ------------------------------------------------------------ */
+  --orange: #e9590c;          /* brand fill and LARGE display type only (3.56:1) */
+  --orange-text: #c1450a;     /* 5.09:1 on white, and 5.09:1 behind white — use for small text and buttons */
+  --orange-bright: #ff6b18;   /* large text, icons, glows only */
+  --orange-deep: #a33a06;     /* 6.63:1 — hover state */
+  --orange-tint: #fff2e9;
+  --orange-veil: rgba(233, 89, 12, 0.11);
+
+  --blue: #1657e8;            /* 5.24:1 on white */
+  --blue-bright: #2b7bff;
+  --blue-deep: #16308f;
+  --blue-tint: #eef3ff;
+
+  /* --- neutrals --------------------------------------------------------- */
+  --ink: #0b0d12;
+  --ink-soft: #161a22;
+  --ink-line: #232936;
+  --graphite: #333a48;
+  --muted: #565e6f;           /* 6.6:1 on white — the single muted token */
+  --muted-strong: #434a58;
+  --line: #e4e3df;
+  --line-soft: #efeeea;
+  --paper: #ffffff;
+  --bone: #faf9f6;
+  --sand: #f4f2ed;
+
+  /* --- semantic --------------------------------------------------------- */
+  --ok: #116b3d;
+  --ok-tint: #e7f5ed;
+  --warn: #8a5a00;
+  --warn-tint: #fdf3e0;
+  --danger: #b3261e;
+  --danger-tint: #fdecea;
+
+  /* --- type ------------------------------------------------------------- */
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  --step--1: clamp(0.82rem, 0.79rem + 0.13vw, 0.89rem);
+  --step-0:  clamp(1rem, 0.96rem + 0.18vw, 1.09rem);
+  --step-1:  clamp(1.2rem, 1.12rem + 0.38vw, 1.45rem);
+  --step-2:  clamp(1.48rem, 1.32rem + 0.76vw, 1.98rem);
+  --step-3:  clamp(1.85rem, 1.55rem + 1.45vw, 2.85rem);
+  --step-4:  clamp(2.3rem, 1.74rem + 2.7vw, 4.1rem);
+  --step-5:  clamp(2.8rem, 1.75rem + 5.1vw, 6.2rem);
+
+  /* --- space ------------------------------------------------------------ */
+  --gutter: clamp(1.25rem, 0.9rem + 1.6vw, 2.5rem);
+  --measure: 68ch;
+  --shell: 1220px;
+  --shell-wide: 1400px;
+
+  /* --- shape ------------------------------------------------------------ */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 34px;
+  --r-pill: 999px;
+
+  /* --- elevation -------------------------------------------------------- */
+  --lift-1: 0 1px 2px rgba(11, 13, 18, 0.05), 0 2px 8px rgba(11, 13, 18, 0.04);
+  --lift-2: 0 2px 6px rgba(11, 13, 18, 0.06), 0 12px 28px rgba(11, 13, 18, 0.07);
+  --lift-3: 0 8px 20px rgba(11, 13, 18, 0.09), 0 28px 64px rgba(11, 13, 18, 0.12);
+  --lift-orange: 0 10px 30px rgba(233, 89, 12, 0.24);
+  --ring: 0 0 0 3px rgba(22, 87, 232, 0.34);
+
+  /* --- motion ----------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 0.84, 0.28, 1);
+  --ease-in-out: cubic-bezier(0.62, 0.02, 0.24, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fast: 180ms;
+  --base: 320ms;
+  --slow: 620ms;
+  --reveal: 820ms;
+}
+
+/* A single switch that turns the whole motion system off. Set by the OS
+   preference or by the member in Settings — see motion.js. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fast: 1ms;
+    --base: 1ms;
+    --slow: 1ms;
+    --reveal: 1ms;
+  }
+}
+:root[data-motion="off"] {
+  --fast: 1ms;
+  --base: 1ms;
+  --slow: 1ms;
+  --reveal: 1ms;
+}

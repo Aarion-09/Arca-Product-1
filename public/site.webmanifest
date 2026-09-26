@@ -1,0 +1,15 @@
+{
+  "name": "ARCA",
+  "short_name": "ARCA",
+  "description": "The premium professional network for real profiles, focused communities and live events.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b0d12",
+  "icons": [
+    { "src": "/images/logo.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/images/arca-mark.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/arca-mark.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
